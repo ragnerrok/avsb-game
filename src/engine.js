@@ -54,6 +54,8 @@ var DEFAULT_RUN_MODIFIER = 2;
 var DEFAULT_CROUCH_MODIFIER = 0.5;
 var DEFAULT_JUMP_POWER = 300;
 var GRAVITY_ACCELERATION = 150;
+var DEFAULT_FIGHTER_WIDTH = 300;
+var DEFAULT_FIGHTER_HEIGHT = 500;
 var DEFAULT_ACTION_NUM_FRAMES = {"Punch": 5, "Kick": 7, "Block": 1};
 // Convenience input bitmasks
 var USER_INPUT_MOVING_LEFT_RIGHT = (UserInputEnum.USER_INPUT_LEFT | UserInputEnum.USER_INPUT_RIGHT);
@@ -76,11 +78,24 @@ function init_engine()
 	
 	draw_stage_bounds();
 	
-	var test_fighter = new Fighter(new Point(20, 650));
+	var test_fighter = new Fighter("Aaron-Frame-1", new Point(0, ctx.canvas.height));
 	fighters.push(test_fighter);
+	
+	fighters.forEach(function(fighter) {
+		load_frames(fighter);
+	});
 	
 	// Start animation loop
 	requestAnimationFrame(render_frame);
+}
+
+function load_frames(fighter)
+{
+	var frameImage = document.getElementById("aaron_frame_1");
+	var frame = new Frame(frameImage, DEFAULT_FIGHTER_WIDTH);
+	var boundsSVG = document.getElementById("aaron_bounds_1");
+	frame.parseBounds(boundsSVG, 1);
+	fighter.addFrame(frame);
 }
 
 function draw_stage_bounds()
@@ -96,7 +111,8 @@ function render_frame(globalTime)
 	
 	fighters.forEach(function(fighter) {
 		update_fighter(fighter, globalTime);
-		draw_fighter(fighter);
+		// TODO: Always drawing frame 0 temporarily for testing
+		fighter.draw(0);
 	});
 	
 	requestAnimationFrame(render_frame);
@@ -218,8 +234,6 @@ function update_fighter_position(fighter, frameDuration)
 {
 	var frameDurationSecs = (frameDuration / 1000);
 	
-	//console.log("VelX: " + fighter.velX);
-	
 	// If we're moving, update the position of the fighter
 	switch (fighter.animationState) {
 	case AnimationStateEnum.ANIMATION_STATE_JUMP:
@@ -228,9 +242,9 @@ function update_fighter_position(fighter, frameDuration)
 		// If we're back on the ground, we're not in jump mode anymore
 		// TODO: fix this magic number
 		var predictedYPos = fighter.location.y + (fighter.velY * frameDurationSecs);
-		if (predictedYPos >= 650) {
+		if (predictedYPos >= ctx.canvas.height) {
 			fighter.velY = 0;
-			fighter.location.y = 650;
+			fighter.location.y = ctx.canvas.height;
 			fighter.animationState = AnimationStateEnum.ANIMATION_STATE_IDLE;
 		}
 		break;
@@ -243,22 +257,8 @@ function update_fighter_position(fighter, frameDuration)
 	var yOffset = fighter.velY * frameDurationSecs;
 	
 	// TODO: Fix magic numbers
-	fighter.location.x = clamp_to_range(fighter.location.x + xOffset, 0, 650);
-	fighter.location.y = clamp_to_range(fighter.location.y + yOffset, 0, 650);
-}
-
-function draw_fighter(fighter)
-{	
-	ctx.fillStyle = 'green';
-	ctx.font = "12px sans-serif"
-	ctx.fillRect(fighter.location.x, fighter.location.y, 100, 100);
-	ctx.fillStyle = 'black'
-	ctx.fillText(fighter.animationState, fighter.location.x + 5, fighter.location.y + 20);
-	ctx.fillText("Modifier: " + fighter.movementModifier, fighter.location.x + 5, fighter.location.y + 35);
-	ctx.fillText("Facing: " + fighter.facing, fighter.location.x + 5, fighter.location.y + 50);
-	ctx.fillText("Action: " + fighter.action, fighter.location.x + 5, fighter.location.y + 65);
-	ctx.fillText("Frame: " + fighter.currentFrame, fighter.location.x + 5, fighter.location.y + 80);
-	ctx.fillText("Action Frame: " + fighter.actionFrame, fighter.location.x + 5, fighter.location.y + 95);
+	fighter.location.x = clamp_to_range(fighter.location.x + xOffset, 0, ctx.canvas.width);
+	fighter.location.y = clamp_to_range(fighter.location.y + yOffset, 0, ctx.canvas.height);
 }
 
 function keydown_handler(event)
@@ -280,7 +280,7 @@ function clamp_to_range(value, rangeLow, rangeHigh)
 	return (value < rangeLow) ? rangeLow : ((value > rangeHigh) ? rangeHigh : value);
 }
 
-function Fighter(startingPosition, movementSpeed, runModifier, crouchModifier, jumpPower, actionNumFrames)
+function Fighter(name, startingPosition, movementSpeed, runModifier, crouchModifier, jumpPower, actionNumFrames)
 {
 	if (startingPosition === undefined) {
 		startingPosition = new Point();
@@ -306,6 +306,7 @@ function Fighter(startingPosition, movementSpeed, runModifier, crouchModifier, j
 		actionNumFrames = DEFAULT_ACTION_NUM_FRAMES;
 	}
 	
+	this.name = name;
 	this.animationState = AnimationStateEnum.ANIMATION_STATE_IDLE;
 	this.action = ActionEnum.ACTION_NONE;
 	this.movementModifier = MovementModifierEnum.MOVEMENT_MODIFIER_NONE;
@@ -320,6 +321,69 @@ function Fighter(startingPosition, movementSpeed, runModifier, crouchModifier, j
 	this.jumpPower = jumpPower;
 	this.velY = 0;
 	this.velX = 0;
+	// TODO: This is temporary
+	this.frames = [];
+	
+	// Toggle this to turn debug info on and off
+	this.debugMode = true;
+}
+
+Fighter.prototype.addFrame = function (frame) {
+	this.frames.push(frame);
+}
+
+Fighter.prototype.draw = function(frame) {	
+	// Draw fighter frame
+	//console.log(this.frames[frame].height)
+	ctx.fillStyle = "orange";
+	ctx.fillRect(this.location.x, this.location.y - this.frames[frame].height, this.frames[frame].width, this.frames[frame].height);
+	ctx.drawImage(this.frames[frame].image, this.location.x, this.location.y - this.frames[frame].height, this.frames[frame].width, this.frames[frame].height);
+	
+	// If in debug mode, draw fighter bounds and debug info
+	if (this.debugMode) {
+		ctx.strokeStyle = "blue";
+		this.drawBoundingBox(frame, "headBounds");
+		ctx.strokeStyle = "purple";
+		this.drawBoundingBox(frame, "bodyBounds");
+		ctx.strokeStyle = "green";
+		this.drawBoundingBox(frame, "leftArmBounds");
+		this.drawBoundingBox(frame, "rightArmBounds");
+		ctx.strokeStyle = "red"
+		this.drawBoundingBox(frame, "leftLegBounds");
+		this.drawBoundingBox(frame, "rightLegBounds");
+		
+		ctx.font = "12px sans-serif"
+		ctx.fillStyle = 'black'
+		ctx.fillText(this.animationState, this.location.x + 100, this.location.y - 95);
+		ctx.fillText("Modifier: " + this.movementModifier, this.location.x + 100, this.location.y - 80);
+		ctx.fillText("Facing: " + this.facing, this.location.x + 100, this.location.y - 65);
+		ctx.fillText("Action: " + this.action, this.location.x + 100, this.location.y - 50);
+		ctx.fillText("Frame: " + this.currentFrame, this.location.x + 100, this.location.y - 35);
+		ctx.fillText("Action Frame: " + this.actionFrame, this.location.x + 100, this.location.y - 20);
+	}
+}
+
+Fighter.prototype.drawBoundingBox = function(frame, boundingBoxSection)
+{
+	ctx.save();
+	
+	ctx.translate(0, -this.frames[frame].height);
+	
+	var bounds = this.frames[frame].bounds;
+	var boundsSection = bounds[boundingBoxSection];
+	
+	ctx.scale(bounds.xScale, bounds.yScale);
+	
+	if (boundsSection.transform != null) {
+		ctx.translate(this.location.x / bounds.xScale, this.location.y / bounds.yScale);
+		//ctx.transform(bounds.transform.a * xScale, bounds.transform.b * xScale, bounds.transform.c * yScale, bounds.transform.d * yScale, bounds.transform.e * xScale, bounds.transform.f * yScale);
+		ctx.transform(boundsSection.transform.a, boundsSection.transform.b, boundsSection.transform.c, boundsSection.transform.d, boundsSection.transform.e, boundsSection.transform.f);
+		ctx.translate(-this.location.x / bounds.xScale, -this.location.y / bounds.yScale);
+	}
+	
+	ctx.strokeRect((this.location.x / bounds.xScale) + boundsSection.x, (this.location.y / bounds.yScale) + boundsSection.y, boundsSection.width, boundsSection.height);
+	
+	ctx.restore();
 }
 
 function Point(x, y)
@@ -334,4 +398,66 @@ function Point(x, y)
 	
 	this.x = x;
 	this.y = y;
+}
+
+function Frame(image, width)
+{
+	this.image = image;
+	this.aspectRatio = this.image.naturalHeight / this.image.naturalWidth;
+	this.width = width;
+	this.height = this.width * this.aspectRatio;
+}
+
+Frame.prototype.parseBounds = function(boundsSVG, frameNum)
+{
+	var boundsSVG = document.getElementById("aaron");
+	
+	var headBounds = document.getElementById("frame" + frameNum + "-head");
+	var bodyBounds = document.getElementById("frame" + frameNum + "-body");
+	var leftArmBounds = document.getElementById("frame" + frameNum + "-leftarm");
+	var rightArmBounds = document.getElementById("frame" + frameNum + "-rightarm");
+	var leftLegBounds = document.getElementById("frame" + frameNum + "-leftleg");
+	var rightLegBounds = document.getElementById("frame" + frameNum + "-rightleg");
+	
+	var frameBounds = new FrameBounds(DEFAULT_FIGHTER_WIDTH / boundsSVG.viewBox.baseVal.width, (DEFAULT_FIGHTER_WIDTH * this.aspectRatio) / boundsSVG.viewBox.baseVal.height);
+	
+	frameBounds.parseSectionBounds(headBounds, "headBounds");
+	frameBounds.parseSectionBounds(bodyBounds, "bodyBounds");
+	frameBounds.parseSectionBounds(leftArmBounds, "leftArmBounds");
+	frameBounds.parseSectionBounds(rightArmBounds, "rightArmBounds");
+	frameBounds.parseSectionBounds(leftLegBounds, "leftLegBounds");
+	frameBounds.parseSectionBounds(rightLegBounds, "rightLegBounds");
+	
+	this.bounds = frameBounds;
+	this.bounds = frameBounds;
+}
+
+function Bounds(x, y, width, height, transform)
+{
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
+	this.transform = transform;
+}
+
+function FrameBounds(xScale, yScale)
+{
+	this.xScale = xScale;
+	this.yScale = yScale;
+	this.headBounds = null;
+	this.bodyBounds = null;
+	this.leftArmBounds = null;
+	this.rightArmBounds = null;
+	this.leftLegBounds = null;
+	this.rightLegBounds = null;
+}
+
+FrameBounds.prototype.parseSectionBounds = function (boundsElement, section) {
+	var transform = null;
+	if (boundsElement.transform.baseVal.length != 0) {
+		transform = boundsElement.transform.baseVal[0].matrix;
+	}
+	
+	this[section] = new Bounds(boundsElement.x.baseVal.value, boundsElement.y.baseVal.value, boundsElement.width.baseVal.value, boundsElement.height.baseVal.value, transform);
 }

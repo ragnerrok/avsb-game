@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="aaron" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 786 1164" enable-background="new 0 0 786 1164" xml:space="preserve">
+<g id="boundingBoxes">
+	<g id="frame1">
+		<rect id="frame1-head" x="356" y="82" fill="#3E429B" stroke="#000000" stroke-miterlimit="10" width="162" height="164"/>
+		<rect id="frame1-rightarm" x="94" y="228" fill="#2FB44A" stroke="#000000" stroke-miterlimit="10" width="192" height="158"/>
+		<rect id="frame1-leftarm" x="515.9" y="180.5" transform="matrix(0.9738 -0.2273 0.2273 0.9738 -52.2816 140.2688)" fill="#2FB44A" stroke="#000000" stroke-miterlimit="10" width="133.8" height="233.2"/>
+		<rect id="frame1-body" x="286" y="228" fill="#A8509F" stroke="#000000" stroke-miterlimit="10" width="218" height="392"/>
+		<rect id="frame1-rightleg" x="153.3" y="590.4" transform="matrix(0.8961 0.4438 -0.4438 0.8961 403.4889 -9.1622)" fill="#ECE70D" stroke="#000000" stroke-miterlimit="10" width="136" height="534.1"/>
+		<rect id="frame1-leftleg" x="505.9" y="589.1" transform="matrix(0.9123 -0.4094 0.4094 0.9123 -304.3552 310.9011)" fill="#ECE70D" stroke="#000000" stroke-miterlimit="10" width="136" height="554.3"/>
+	</g>
+</g>
+</svg>
