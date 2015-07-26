@@ -42,67 +42,118 @@ function Fighter(engine, name, startingPosition, movementSpeed, runModifier, cro
 	this.jumpPower = jumpPower;
 	this.velY = 0;
 	this.velX = 0;
+	
 	// TODO: This is temporary
 	this.frames = [];
+	
+	this.loadFrames();
+	
+	var maxFrameBounds = this.getMaxFrameBounds();
+	this.maxFrameWidth = maxFrameBounds.x;
+	this.maxFrameHeight = maxFrameBounds.y;
+	
+	// Create a per-fighter canvas to render each frame into.
+	// This is so we can apply transformations to each frame without
+	// affecting the main canvas.  The fighter canvas will then be
+	// rendered into the main canvas
+	this.subCanvas = this.engine.mainPage.createElement("canvas");
+	this.subCanvas.width = this.maxFrameWidth;
+	this.subCanvas.height = this.maxFrameHeight;
+	this.subCtx = this.subCanvas.getContext("2d");
 	
 	// Toggle this to turn debug info on and off
 	this.debugMode = true;
 }
 
-Fighter.prototype.addFrame = function (frame) {
+Fighter.prototype.loadFrames = function() {
+	var frameImage = this.engine.mainPage.getElementById("aaron_frame_1");
+	var frame = new Frame(frameImage);
+	var boundsSVG = this.engine.mainPage.getElementById("aaron_bounds_1");
+	frame.parseBounds(boundsSVG, 1);
 	this.frames.push(frame);
 };
 
-Fighter.prototype.draw = function(frame) {	
-	// Draw fighter frame
-	//console.log(this.frames[frame].height)
-	this.engine.ctx.fillStyle = "orange";
-	//ctx.fillRect(this.location.x, this.location.y - this.frames[frame].height, this.frames[frame].width, this.frames[frame].height);
-	this.engine.ctx.drawImage(this.frames[frame].image, this.location.x, this.location.y - this.frames[frame].height, this.frames[frame].width, this.frames[frame].height);
+Fighter.prototype.getMaxFrameBounds = function() {
+	var maxWidth = 0;
+	var maxHeight = 0;
+	this.frames.forEach(function(frame) {
+		if (frame.width > maxWidth) {
+			maxWidth = frame.width;
+		}
+		
+		if (frame.height > maxHeight) {
+			maxHeight = frame.height;
+		}
+	});
 	
-	// If in debug mode, draw fighter bounds and debug info
+	return new Point(maxWidth, maxHeight);
+}
+
+Fighter.prototype.draw = function(frame) {
+	// Clear the fighter's drawing context
+	this.subCtx.clearRect(0, 0, this.subCanvas.width, this.subCanvas.height);
+	
+	// Draw fighter frame
+	this.subCtx.save();
+	
+	if (this.facing == FacingEnum.FACING_LEFT) {
+		this.subCtx.translate(this.frames[frame].width, 0.0);
+		this.subCtx.scale(-1.0, 1.0);
+		//this.subCtx.translate(-this.frames[frame].width, 0.0);
+	}
+	
+	this.subCtx.fillStyle = "orange";
+	this.subCtx.drawImage(this.frames[frame].image, 0, 0, this.frames[frame].width, this.frames[frame].height);
+	
+	// If in debug mode, draw fighter bounds
 	if (this.debugMode) {
-		this.engine.ctx.strokeStyle = "green";
-		this.engine.ctx.lineWidth = "8";
+		this.subCtx.strokeStyle = "green";
+		this.subCtx.lineWidth = "8";
 		this.drawBoundingBox(frame, "headBounds");
 		this.drawBoundingBox(frame, "bodyBounds");
 		this.drawBoundingBox(frame, "leftArmBounds");
 		this.drawBoundingBox(frame, "rightArmBounds");
 		this.drawBoundingBox(frame, "leftLegBounds");
 		this.drawBoundingBox(frame, "rightLegBounds");
-		
-		this.engine.ctx.font = "12px sans-serif"
-		this.engine.ctx.fillStyle = 'black'
-		this.engine.ctx.fillText(this.animationState, this.location.x + 100, this.location.y - 95);
-		this.engine.ctx.fillText("Modifier: " + this.movementModifier, this.location.x + 100, this.location.y - 80);
-		this.engine.ctx.fillText("Facing: " + this.facing, this.location.x + 100, this.location.y - 65);
-		this.engine.ctx.fillText("Action: " + this.action, this.location.x + 100, this.location.y - 50);
-		this.engine.ctx.fillText("Frame: " + this.currentFrame, this.location.x + 100, this.location.y - 35);
-		this.engine.ctx.fillText("Action Frame: " + this.actionFrame, this.location.x + 100, this.location.y - 20);
+	}
+	
+	this.subCtx.restore();
+	
+	// If in debug mode, draw debug info.  Putting this here after context restore
+	// so we don't flip the debug info if we're facing left
+	if (this.debugMode) {
+		this.subCtx.save();
+		var debugInfoY = this.frames[frame].height - 100;
+		this.subCtx.fillStyle = "orange";
+		this.subCtx.fillRect(0, debugInfoY, 100, 100);
+		this.subCtx.font = "12px sans-serif"
+		this.subCtx.fillStyle = 'black'
+		this.subCtx.fillText(this.animationState, 5, debugInfoY + 10);
+		this.subCtx.fillText("Modifier: " + this.movementModifier, 5, debugInfoY + 25);
+		this.subCtx.fillText("Facing: " + this.facing, 5, debugInfoY + 40);
+		this.subCtx.fillText("Action: " + this.action, 5, debugInfoY + 55);
+		this.subCtx.fillText("Frame: " + this.currentFrame, 5, debugInfoY + 70);
+		this.subCtx.fillText("Action Frame: " + this.actionFrame, 5, debugInfoY + 85);
+		this.subCtx.restore();
 	}
 };
 
 Fighter.prototype.drawBoundingBox = function(frame, boundingBoxSection)
 {
-	this.engine.ctx.save();
-	
-	this.engine.ctx.translate(0, -this.frames[frame].height);
+	this.subCtx.save();
 	
 	var bounds = this.frames[frame].bounds;
 	var boundsSection = bounds[boundingBoxSection];
 	
-	this.engine.ctx.scale(bounds.xScale, bounds.yScale);
+	this.subCtx.scale(bounds.xScale, bounds.yScale);
 	
 	if (boundsSection.transform != null) {
-		this.engine.ctx.translate(this.location.x / bounds.xScale, this.location.y / bounds.yScale);
-		//ctx.transform(bounds.transform.a * xScale, bounds.transform.b * xScale, bounds.transform.c * yScale, bounds.transform.d * yScale, bounds.transform.e * xScale, bounds.transform.f * yScale);
-		this.engine.ctx.transform(boundsSection.transform.a, boundsSection.transform.b, boundsSection.transform.c, boundsSection.transform.d, boundsSection.transform.e, boundsSection.transform.f);
-		this.engine.ctx.translate(-this.location.x / bounds.xScale, -this.location.y / bounds.yScale);
+		this.subCtx.transform(boundsSection.transform.a, boundsSection.transform.b, boundsSection.transform.c, boundsSection.transform.d, boundsSection.transform.e, boundsSection.transform.f);
 	}
 	
-	this.engine.ctx.strokeRect((this.location.x / bounds.xScale) + boundsSection.x, (this.location.y / bounds.yScale) + boundsSection.y, boundsSection.width, boundsSection.height);
+	this.subCtx.strokeRect(boundsSection.x, boundsSection.y, boundsSection.width, boundsSection.height);
 	
-	this.engine.ctx.restore();
+	this.subCtx.restore();
 };
 
 Fighter.prototype.update = function(frameDuration) {

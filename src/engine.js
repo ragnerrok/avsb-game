@@ -35,17 +35,6 @@ var UserInputEnum = Object.freeze({
 	USER_INPUT_RUN: 0x0080
 });
 
-var ControlsMap = [];
-
-ControlsMap[KEY_LEFT.toString()] = UserInputEnum.USER_INPUT_LEFT;
-ControlsMap[KEY_RIGHT.toString()] = UserInputEnum.USER_INPUT_RIGHT;
-ControlsMap[KEY_UP.toString()] = UserInputEnum.USER_INPUT_JUMP;
-ControlsMap[KEY_DOWN.toString()] = UserInputEnum.USER_INPUT_CROUCH;
-ControlsMap[KEY_Z.toString()] = UserInputEnum.USER_INPUT_PUNCH;
-ControlsMap[KEY_X.toString()] = UserInputEnum.USER_INPUT_KICK;
-ControlsMap[KEY_C.toString()] = UserInputEnum.USER_INPUT_BLOCK;
-ControlsMap[KEY_CTRL.toString()] = UserInputEnum.USER_INPUT_RUN;
-
 var FPS = 15;
 var NUM_FRAMES_PER_STATE = 15;
 var FRAME_TIME = 1000 / FPS;
@@ -71,6 +60,7 @@ function Engine(mainPage)
 	// Initialize drawing context
 	this.canvas = mainPage.getElementById("main-canvas");
 	this.ctx = this.canvas.getContext("2d");
+	this.mainPage = mainPage;
 	
 	// Add keyboard listeners
 	mainPage.addEventListener('keydown', this.keydownHandler.bind(this));
@@ -96,7 +86,6 @@ function Engine(mainPage)
 	
 	//TODO: Temporarily loading one fighter
 	this.fighter1 = new Fighter(this, "Aaron-Frame-1", new Point(0, this.canvas.height));
-	load_frames(this.fighter1);
 	
 	// Set up stage
 	this.drawStageBounds();
@@ -104,8 +93,8 @@ function Engine(mainPage)
 	// Start animation loop
 	// Need to setup self variable for later use in correctly
 	// binding subsequent calls of requestAnimationFrame
-	this.self = this;
-	requestAnimationFrame(this.renderFrame.bind(this.self));
+	//this.self = this;
+	requestAnimationFrame(this.renderFrame.bind(this));
 }
 
 Engine.prototype.keydownHandler = function(event) {
@@ -137,14 +126,10 @@ Engine.prototype.renderFrame = function(globalTime) {
 	this.fighter1.update(this.frameDuration);
 	this.fighter1.draw(0);
 	
-	requestAnimationFrame(this.renderFrame.bind(this.self));
+	// Render each individual fighter canvas into the main canvas
+	// TODO: For now, just render fighter 1
+	// TODO: Change y-offset to be based on current frame when we have more than 1 frame
+	this.ctx.drawImage(this.fighter1.subCanvas, this.fighter1.location.x, this.fighter1.location.y - this.fighter1.frames[0].height);
+	
+	requestAnimationFrame(this.renderFrame.bind(this));
 };
-
-function load_frames(fighter)
-{
-	var frameImage = document.getElementById("aaron_frame_1");
-	var frame = new Frame(frameImage);
-	var boundsSVG = document.getElementById("aaron_bounds_1");
-	frame.parseBounds(boundsSVG, 1);
-	fighter.addFrame(frame);
-}
