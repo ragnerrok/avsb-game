@@ -49,20 +49,15 @@ ControlsMap[KEY_CTRL.toString()] = UserInputEnum.USER_INPUT_RUN;
 var FPS = 15;
 var NUM_FRAMES_PER_STATE = 15;
 var FRAME_TIME = 1000 / FPS;
-var DEFAULT_MOVEMENT_SPEED = 75;
+var DEFAULT_MOVEMENT_SPEED = 200;
 var DEFAULT_RUN_MODIFIER = 2;
 var DEFAULT_CROUCH_MODIFIER = 0.5;
-var DEFAULT_JUMP_POWER = 300;
-var GRAVITY_ACCELERATION = 150;
-var DEFAULT_FIGHTER_WIDTH = 200;
-var DEFAULT_FIGHTER_HEIGHT = 500;
+var DEFAULT_JUMP_POWER = 750;
+var GRAVITY_ACCELERATION = 1000;
+var FRAME_SIZE_SCALE_FACTOR = 0.75;
 var DEFAULT_ACTION_NUM_FRAMES = {"Punch": 5, "Kick": 7, "Block": 1};
 // Convenience input bitmasks
 var USER_INPUT_MOVING_LEFT_RIGHT = (UserInputEnum.USER_INPUT_LEFT | UserInputEnum.USER_INPUT_RIGHT);
-
-var currentInput = UserInputEnum.USER_INPUT_NONE;
-var lastFrameTime = 0;
-var frameDuration = 0;
 
 var gblEngine = null;
 
@@ -148,7 +143,7 @@ Engine.prototype.renderFrame = function(globalTime) {
 function load_frames(fighter)
 {
 	var frameImage = document.getElementById("aaron_frame_1");
-	var frame = new Frame(frameImage, DEFAULT_FIGHTER_WIDTH);
+	var frame = new Frame(frameImage);
 	var boundsSVG = document.getElementById("aaron_bounds_1");
 	frame.parseBounds(boundsSVG, 1);
 	fighter.addFrame(frame);

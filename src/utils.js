@@ -12,12 +12,12 @@ function Point(x, y)
 	this.y = y;
 }
 
-function Frame(image, width)
+function Frame(image)
 {
 	this.image = image;
 	this.aspectRatio = this.image.naturalHeight / this.image.naturalWidth;
-	this.width = width;
-	this.height = this.width * this.aspectRatio;
+	this.width = this.image.naturalWidth * FRAME_SIZE_SCALE_FACTOR;
+	this.height = this.image.naturalHeight * FRAME_SIZE_SCALE_FACTOR;
 }
 
 Frame.prototype.parseBounds = function(boundsSVG, frameNum)
@@ -31,7 +31,7 @@ Frame.prototype.parseBounds = function(boundsSVG, frameNum)
 	var leftLegBounds = document.getElementById("frame" + frameNum + "-leftleg");
 	var rightLegBounds = document.getElementById("frame" + frameNum + "-rightleg");
 	
-	var frameBounds = new FrameBounds(DEFAULT_FIGHTER_WIDTH / boundsSVG.viewBox.baseVal.width, (DEFAULT_FIGHTER_WIDTH * this.aspectRatio) / boundsSVG.viewBox.baseVal.height);
+	var frameBounds = new FrameBounds(this.width / boundsSVG.viewBox.baseVal.width, this.height / boundsSVG.viewBox.baseVal.height);
 	
 	frameBounds.parseSectionBounds(headBounds, "headBounds");
 	frameBounds.parseSectionBounds(bodyBounds, "bodyBounds");
