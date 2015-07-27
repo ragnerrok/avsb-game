@@ -84,8 +84,8 @@ function Engine(mainPage)
 	this.fighter1 = null;
 	this.fighter2 = null;
 	
-	//TODO: Temporarily loading one fighter
-	this.fighter1 = new Fighter(this, "Aaron-Frame-1", new Point(0, this.canvas.height));
+	this.fighter1 = new PlayerFighter(this, "Aaron-Frame-1", new Point(0, this.canvas.height));
+	this.fighter2 = new AIFighter(this, "Aaron-Frame-1", new Point(550, this.canvas.height));
 	
 	// Set up stage
 	this.drawStageBounds();
@@ -122,14 +122,20 @@ Engine.prototype.renderFrame = function(globalTime) {
 	// Clear the canvas
 	this.ctx.clearRect(1, 1, this.canvas.width - 2, this.canvas.height - 2);
 	
-	// TODO: For now, just render fighter 1
+	// Check fighter collisions
+	// TODO: Change bounds check to be based on current frame when we have more than 1 frame
+	this.fighter1.frames[0].bounds.checkCollisions(this.fighter2.frames[0].bounds);
+	
 	this.fighter1.update(this.frameDuration);
 	this.fighter1.draw(0);
 	
+	this.fighter2.update(this.frameDuration);
+	this.fighter2.draw(0);
+	
 	// Render each individual fighter canvas into the main canvas
-	// TODO: For now, just render fighter 1
 	// TODO: Change y-offset to be based on current frame when we have more than 1 frame
 	this.ctx.drawImage(this.fighter1.subCanvas, this.fighter1.location.x, this.fighter1.location.y - this.fighter1.frames[0].height);
+	this.ctx.drawImage(this.fighter2.subCanvas, this.fighter2.location.x, this.fighter2.location.y - this.fighter2.frames[0].height);
 	
 	requestAnimationFrame(this.renderFrame.bind(this));
 };
