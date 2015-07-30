@@ -36,6 +36,7 @@ var UserInputEnum = Object.freeze({
 });
 
 var FPS = 15;
+var FPS_DECIMATION_LIMIT = 2;
 var NUM_FRAMES_PER_STATE = 15;
 var FRAME_TIME = 1000 / FPS;
 var DEFAULT_MOVEMENT_SPEED = 200;
@@ -80,6 +81,8 @@ function Engine(mainPage)
 	// Initialize global engine variables
 	this.lastFrameTime = 0;
 	this.frameDuration = 0;
+	this.fps = 0;
+	this.fpsDecimationCounter = 0;
 	this.currentInput = UserInputEnum.USER_INPUT_NONE;
 	this.fighter1 = null;
 	this.fighter2 = null;
@@ -118,9 +121,21 @@ Engine.prototype.drawStageBounds = function() {
 Engine.prototype.renderFrame = function(globalTime) {
 	this.frameDuration = globalTime - this.lastFrameTime;
 	this.lastFrameTime = globalTime;
+	if (this.fpsDecimationCounter++ >= FPS_DECIMATION_LIMIT) {
+		this.fps = 1.0 / (this.frameDuration / 1000.0);
+		this.fpsDecimationCounter = 0;
+	}
+	
 	
 	// Clear the canvas
 	this.ctx.clearRect(1, 1, this.canvas.width - 2, this.canvas.height - 2);
+	
+	// Draw the fps meter in the top left corner
+	this.ctx.save();
+	this.ctx.font = "18px sans-serif"
+	this.ctx.fillStyle = 'black'
+	this.ctx.fillText("FPS: " + this.fps.toFixed(2), 10, 30);
+	this.ctx.restore();
 	
 	// Check fighter collisions
 	// TODO: Change bounds check to be based on current frame when we have more than 1 frame
