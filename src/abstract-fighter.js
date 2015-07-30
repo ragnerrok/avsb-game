@@ -142,7 +142,6 @@ AbstractFighter.prototype.drawBoundingBox = function(frame, boundingBoxSection)
 	
 	this.subCtx.lineWidth = "12";
 	
-	
 	var bounds = this.frames[frame].bounds;
 	var boundsSection = bounds[boundingBoxSection];
 	
