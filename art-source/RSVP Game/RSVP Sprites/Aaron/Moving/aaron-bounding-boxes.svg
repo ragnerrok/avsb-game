@@ -1,23 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 19.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="aaron" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 786 1164" enable-background="new 0 0 786 1164" xml:space="preserve">
+	 viewBox="0 0 51.4 79.8" enable-background="new 0 0 51.4 79.8" xml:space="preserve">
 <g id="boundingBoxes">
-	<g id="frame1">
-		<rect id="frame1-head" x="356" y="82" fill="#3E429B" stroke="#000000" stroke-miterlimit="10" width="162" height="164"/>
-		<rect id="frame1-rightarm" x="94" y="228" fill="#2FB44A" stroke="#000000" stroke-miterlimit="10" width="192" height="158"/>
+	<g id="frame1" display="none">
+		<rect id="frame1-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame1-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame1-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame1-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
 		
-			<rect id="frame1-leftarm" x="515.9" y="180.5" transform="matrix(0.9738 -0.2273 0.2273 0.9738 -52.2816 140.2688)" fill="#2FB44A" stroke="#000000" stroke-miterlimit="10" width="133.8" height="233.2"/>
-		<rect id="frame1-body" x="286" y="228" fill="#A8509F" stroke="#000000" stroke-miterlimit="10" width="218" height="392"/>
+			<rect id="frame1-leg-right" x="9.1" y="38.7" transform="matrix(0.9189 0.3946 -0.3946 0.9189 24.3896 -0.7992)" display="inline" fill="#B4519E" width="10" height="40.3"/>
 		
-			<rect id="frame1-rightleg" x="153.3" y="590.4" transform="matrix(0.8961 0.4438 -0.4438 0.8961 403.4889 -9.1622)" fill="#ECE70D" stroke="#000000" stroke-miterlimit="10" width="136" height="534.1"/>
+			<rect id="frame1-leg-left" x="32" y="38.6" transform="matrix(0.8713 -0.4908 0.4908 0.8713 -24.0944 25.7087)" display="inline" fill="#B4519E" width="10" height="40.3"/>
+	</g>
+	<g id="frame2" display="none">
+		<rect id="frame2-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame2-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame2-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame2-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
 		
-			<rect id="frame1-leftleg" x="505.9" y="589.1" transform="matrix(0.9123 -0.4094 0.4094 0.9123 -304.3552 310.9011)" fill="#ECE70D" stroke="#000000" stroke-miterlimit="10" width="136" height="554.3"/>
+			<rect id="frame2-leg-right" x="9.1" y="38.7" transform="matrix(0.9189 0.3946 -0.3946 0.9189 24.3896 -0.7992)" display="inline" fill="#B4519E" width="10" height="40.3"/>
+		
+			<rect id="frame2-leg-left" x="32" y="38.6" transform="matrix(0.8713 -0.4908 0.4908 0.8713 -24.0944 25.7087)" display="inline" fill="#B4519E" width="10" height="40.3"/>
+	</g>
+	<g id="frame3" display="none">
+		<rect id="frame3-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame3-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame3-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame3-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame3-leg-right" x="10.1" y="40.4" transform="matrix(0.9953 9.681068e-002 -9.681068e-002 0.9953 5.8541 -1.2819)" display="inline" fill="#B4519E" width="12" height="38.6"/>
+		
+			<rect id="frame3-leg-left" x="27.5" y="38.6" transform="matrix(0.9837 -0.1795 0.1795 0.9837 -10.0281 6.7848)" display="inline" fill="#B4519E" width="10" height="40.3"/>
+	</g>
+	<g id="frame4" display="none">
+		<rect id="frame4-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame4-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame4-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame4-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame4-leg-right" x="15.4" y="39.4" transform="matrix(1 9.914960e-003 -9.914960e-003 1 0.583 -0.2004)" display="inline" fill="#B4519E" width="10.3" height="38.6"/>
+		
+			<rect id="frame4-leg-left" x="24.5" y="38.6" transform="matrix(0.9999 -1.058298e-002 1.058298e-002 0.9999 -0.6205 0.3151)" display="inline" fill="#B4519E" width="10" height="40.3"/>
+	</g>
+	<g id="frame5" display="none">
+		<rect id="frame5-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame5-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame5-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame5-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame5-leg-right" x="20.4" y="38.4" transform="matrix(0.9796 -0.2008 0.2008 0.9796 -11.0742 6.2143)" display="inline" fill="#B4519E" width="9.4" height="38.6"/>
+		
+			<rect id="frame5-leg-left" x="22.5" y="38.6" transform="matrix(0.9999 -1.058298e-002 1.058298e-002 0.9999 -0.6207 0.2939)" display="inline" fill="#B4519E" width="10" height="40.3"/>
+	</g>
+	<g id="frame6" display="none">
+		<rect id="frame6-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame6-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame6-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame6-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame6-leg-right" x="22.4" y="38.4" transform="matrix(0.9598 -0.2807 0.2807 0.9598 -15.1042 9.9245)" display="inline" fill="#B4519E" width="9.4" height="38.6"/>
+		
+			<rect id="frame6-leg-left" x="21.5" y="38.6" transform="matrix(0.9953 9.720197e-002 -9.720197e-002 0.9953 5.84 -2.2938)" display="inline" fill="#B4519E" width="10" height="40.3"/>
+	</g>
+	<g id="frame7" display="none">
+		<rect id="frame7-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame7-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame7-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame7-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame7-leg-right" x="23.9" y="37.8" transform="matrix(0.9324 -0.3615 0.3615 0.9324 -19.1125 14.2647)" display="inline" fill="#B4519E" width="9.4" height="40.9"/>
+		
+			<rect id="frame7-leg-left" x="21.5" y="38.6" transform="matrix(0.9953 9.720197e-002 -9.720197e-002 0.9953 5.84 -2.2938)" display="inline" fill="#B4519E" width="10" height="40.3"/>
+	</g>
+	<g id="frame8" display="none">
+		<rect id="frame8-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame8-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame8-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame8-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame8-leg-right" x="24.2" y="37.5" transform="matrix(0.9278 -0.373 0.373 0.9278 -19.2659 14.9172)" display="inline" fill="#B4519E" width="9.4" height="39.5"/>
+		
+			<rect id="frame8-leg-left" x="21.5" y="38.6" transform="matrix(0.9953 9.720197e-002 -9.720197e-002 0.9953 5.84 -2.2938)" display="inline" fill="#B4519E" width="10" height="40.3"/>
+	</g>
+	<g id="frame9" display="none">
+		<rect id="frame9-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame9-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame9-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame9-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame9-leg-right" x="22.6" y="37.5" transform="matrix(0.963 -0.2696 0.2696 0.963 -14.4197 9.4932)" display="inline" fill="#B4519E" width="9.4" height="39.5"/>
+		
+			<rect id="frame9-leg-left" x="22.5" y="38.6" transform="matrix(0.9953 9.720197e-002 -9.720197e-002 0.9953 5.8357 -2.3301)" display="inline" fill="#B4519E" width="8.7" height="40.3"/>
+	</g>
+	<g id="frame10" display="none">
+		<rect id="frame10-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame10-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame10-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame10-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame10-leg-right" x="19.9" y="36.9" transform="matrix(0.9895 -0.1443 0.1443 0.9895 -7.9156 4.3104)" display="inline" fill="#B4519E" width="11.6" height="39.5"/>
+		
+			<rect id="frame10-leg-left" x="22.5" y="38.6" transform="matrix(0.9953 9.720197e-002 -9.720197e-002 0.9953 5.8357 -2.3301)" display="inline" fill="#B4519E" width="8.7" height="40.3"/>
+	</g>
+	<g id="frame11" display="none">
+		<rect id="frame11-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame11-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame11-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame11-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame11-leg-right" x="15.9" y="36.9" transform="matrix(1 6.647051e-003 -6.647051e-003 1 0.3762 -0.1433)" display="inline" fill="#B4519E" width="11.6" height="39.1"/>
+		
+			<rect id="frame11-leg-left" x="23.7" y="38.6" transform="matrix(0.9997 -2.503519e-002 2.503519e-002 0.9997 -1.4615 0.7199)" display="inline" fill="#B4519E" width="8.7" height="40.3"/>
+	</g>
+	<g id="frame12" display="none">
+		<rect id="frame12-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame12-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame12-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame12-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame12-leg-right" x="11.3" y="36.5" transform="matrix(0.9704 0.2416 -0.2416 0.9704 14.0164 -2.1969)" display="inline" fill="#B4519E" width="9.3" height="39.1"/>
+		
+			<rect id="frame12-leg-left" x="25.7" y="38.6" transform="matrix(0.9958 -9.156627e-002 9.156627e-002 0.9958 -5.2515 2.9959)" display="inline" fill="#B4519E" width="8.7" height="40.3"/>
+	</g>
+	<g id="frame13" display="none">
+		<rect id="frame13-head" x="22.7" y="4.4" display="inline" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame13-arm-right" x="1.2" y="10.6" display="inline" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame13-arm-left" x="33.2" y="12.9" display="inline" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame13-body" x="17.2" y="14.2" display="inline" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame13-leg-right" x="11.3" y="36.5" transform="matrix(0.9704 0.2416 -0.2416 0.9704 14.0164 -2.1969)" display="inline" fill="#B4519E" width="9.3" height="39.1"/>
+		
+			<rect id="frame13-leg-left" x="25.7" y="38.6" transform="matrix(0.9958 -9.156627e-002 9.156627e-002 0.9958 -5.2515 2.9959)" display="inline" fill="#B4519E" width="8.7" height="40.3"/>
+	</g>
+	<g id="frame14">
+		<rect id="frame14-head" x="22.7" y="4.4" fill="#12B24B" width="12.2" height="11"/>
+		<rect id="frame14-arm-right" x="1.2" y="10.6" fill="#4FC4CE" width="16" height="16.2"/>
+		<rect id="frame14-arm-left" x="33.2" y="12.9" fill="#4FC4CE" width="11.5" height="16.5"/>
+		<rect id="frame14-body" x="17.2" y="14.2" fill="#3D4FA2" width="16" height="25.7"/>
+		
+			<rect id="frame14-leg-right" x="9.5" y="38.4" transform="matrix(0.9241 0.3821 -0.3821 0.9241 23.3841 -0.9974)" fill="#B4519E" width="9.3" height="39.9"/>
+		
+			<rect id="frame14-leg-left" x="33.2" y="38.6" transform="matrix(0.9106 -0.4134 0.4134 0.9106 -20.9213 20.764)" fill="#B4519E" width="8.7" height="40.3"/>
 	</g>
 </g>
 <g id="pngs">
 	
-		<image overflow="visible" width="250" height="450" xlink:href="Foward/aaron-walking-frame1.png"  transform="matrix(3.7634 0 0 3.7634 -11.4233 -289.762)">
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame1" xlink:href="Foward/aaron-walking-frame1.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame2" xlink:href="Foward/aaron-walking-frame2.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame3" xlink:href="Foward/aaron-walking-frame3.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame4" xlink:href="Foward/aaron-walking-frame4.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame5" xlink:href="Foward/aaron-walking-frame5.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame6" xlink:href="Foward/aaron-walking-frame6.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame7" xlink:href="Foward/aaron-walking-frame7.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame8" xlink:href="Foward/aaron-walking-frame8.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame9" xlink:href="Foward/aaron-walking-frame9.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame10" xlink:href="Foward/aaron-walking-frame10.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame11" xlink:href="Foward/aaron-walking-frame11.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame12" xlink:href="Foward/aaron-walking-frame12.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image display="none" overflow="visible" width="250" height="388" id="file-frame13" xlink:href="Foward/aaron-walking-frame13.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
+	</image>
+	
+		<image overflow="visible" width="250" height="388" id="file-frame14" xlink:href="Foward/aaron-walking-frame14.png"  transform="matrix(0.2057 0 0 0.2057 0 0)">
 	</image>
 </g>
 </svg>
