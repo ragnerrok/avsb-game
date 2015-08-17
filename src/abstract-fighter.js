@@ -1,6 +1,7 @@
-function AbstractFighter(engine, name, startingPosition, movementSpeed, runModifier, crouchModifier, jumpPower, actionNumFrames)
+function AbstractFighter(engine, name, startingPosition, fighterInitJSONUrl, movementSpeed, runModifier, crouchModifier, jumpPower, actionNumFrames)
 {
 	this.engine = engine;
+	this.fighterInitJSONUrl = fighterInitJSONUrl;
 	
 	if (startingPosition === undefined) {
 		startingPosition = new Point();
@@ -33,6 +34,8 @@ function AbstractFighter(engine, name, startingPosition, movementSpeed, runModif
 	this.facing = FacingEnum.FACING_LEFT;
 	this.actionNumFrames = actionNumFrames;
 	this.frameElapsedTime = 0;
+	this.currentFrameSet = FrameSetEnum.FRAME_SET_IDLE;
+	this.numFramesetsLoaded = 0;
 	this.currentFrame = 0;
 	this.actionFrame = 0;
 	this.location = startingPosition;
@@ -46,24 +49,114 @@ function AbstractFighter(engine, name, startingPosition, movementSpeed, runModif
 	// TODO: This is temporary
 	this.frames = [];
 	
-	this.loadFrames();
+	this.framesNew = {};
 	
-	var maxFrameBounds = this.getMaxFrameBounds();
-	this.maxFrameWidth = maxFrameBounds.x;
-	this.maxFrameHeight = maxFrameBounds.y;
+	//this.loadFrames();
+	
+	//var maxFrameBounds = this.getMaxFrameBounds();
+	//this.maxFrameWidth = maxFrameBounds.x;
+	//this.maxFrameHeight = maxFrameBounds.y;
 	
 	// Create a per-fighter canvas to render each frame into.
 	// This is so we can apply transformations to each frame without
 	// affecting the main canvas.  The fighter canvas will then be
 	// rendered into the main canvas
 	this.subCanvas = this.engine.mainPage.createElement("canvas");
-	this.subCanvas.width = this.maxFrameWidth;
-	this.subCanvas.height = this.maxFrameHeight;
+	// These will be updated as the frame images are loaded
+	this.subCanvas.width = 0;
+	this.subCanvas.height = 0;
+	//this.subCanvas.width = this.maxFrameWidth;
+	//this.subCanvas.height = this.maxFrameHeight;
 	this.subCtx = this.subCanvas.getContext("2d");
 	
 	// Toggle this to turn debug info on and off
 	this.debugMode = true;
 }
+
+AbstractFighter.prototype.loadFighter = function() {
+	this.loadInitJSON(this.fighterInitJSONUrl);
+}
+
+AbstractFighter.prototype.loadInitJSON = function(initJSONUrl) {
+	var req = new XMLHttpRequest();
+	req.open("GET", initJSONUrl);
+	req.onreadystatechange = function() {
+		if (req.readyState == 4) {
+			var json = JSON.parse(req.responseText);
+			this.initData = json;
+			this.loadAllBounds();
+		}
+	}.bind(this);
+	req.send();
+};
+
+AbstractFighter.prototype.loadAllBounds = function() {
+	// Load all framesets defined by this fighter
+	var frameSets = this.initData["Framesets"];
+	for (var frameSetName in frameSets) {
+		if (frameSets.hasOwnProperty(frameSetName)) {
+			this.loadBounds(frameSetName);
+		}
+	}
+};
+
+// This needs to be a separate function from loadAllBounds so that closures are set up properly for the callback
+AbstractFighter.prototype.loadBounds = function(frameSetName) {
+	var frameSets = this.initData["Framesets"];
+	frameSets[frameSetName].framesLoaded = 0;
+	this.framesNew[frameSetName] = [];
+	// Load the bounds SVG
+	var req = new XMLHttpRequest();
+	req.open("GET", "../" + frameSets[frameSetName]["BoundsPath"]);
+	req.onreadystatechange = function() {
+		if (req.readyState == 4) {
+			frameSets[frameSetName].boundsSVG = req.responseXML;
+			this.loadFrameImages(frameSetName);
+		}
+	}.bind(this);
+	req.send();
+};
+
+AbstractFighter.prototype.loadFrameImages = function(frameSet) {
+	var frameSets = this.initData["Framesets"];
+	if (frameSets[frameSet]["NumFrames"] > 0) {
+		for (var i = 0; i < frameSets[frameSet]["NumFrames"]; i++) {
+			var tempImage = new Image();
+			tempImage.onload = createBoundFunction(this.onFrameLoaded, tempImage, frameSet, i).bind(this);
+			tempImage.src = "../" + frameSets[frameSet]["Path"] + "/" + frameSets[frameSet]["Prefix"] + i + ".png";
+		}
+	} else {
+		this.numFramesetsLoaded++;
+		if (this.numFramesetsLoaded >= this.initData["NumFramesets"]) {
+			this.onFighterLoaded();
+		}
+	}
+};
+
+AbstractFighter.prototype.onFrameLoaded = function(frameImage, frameSetName, frameNum) {
+	console.log("Loaded frame " + frameNum);
+	this.initData["Framesets"][frameSetName].framesLoaded++;
+	var frame = new Frame(this, frameImage);
+	frame.parseBounds(this.initData["Framesets"][frameSetName].boundsSVG, frameNum);
+	this.framesNew[frameSetName][frameNum] = frame;
+	
+	// Update fighter subcanvas width and height to be as big as the largest frame loaded so far
+	console.log("Width: " + frameImage.naturalWidth + " Height: " + frameImage.naturalHeight);
+	if (frameImage.width > this.subCanvas.width) {
+		this.subCanvas.width = frameImage.width;
+	}
+	if (frameImage.height > this.subCanvas.height) {
+		this.subCanvas.height = frameImage.height;
+	}
+	
+	if (this.initData["Framesets"][frameSetName].framesLoaded == this.initData["Framesets"][frameSetName]["NumFrames"]) {
+		console.log("Done loading frames for frameset " + frameSetName);
+		this.numFramesetsLoaded++;
+		if (this.numFramesetsLoaded >= this.initData["NumFramesets"]) {
+			this.onFighterLoaded();
+		}
+	}
+};
 
 AbstractFighter.prototype.loadFrames = function() {
 	var frameImage = this.engine.mainPage.getElementById("aaron_frame_1");
@@ -76,7 +169,8 @@ AbstractFighter.prototype.loadFrames = function() {
 AbstractFighter.prototype.getMaxFrameBounds = function() {
 	var maxWidth = 0;
 	var maxHeight = 0;
-	this.frames.forEach(function(frame) {
+	//TODO: Fix this to work with all framesets (not just walking)
+	this.framesNew["Walking"].forEach(function(frame) {
 		if (frame.width > maxWidth) {
 			maxWidth = frame.width;
 		}
@@ -91,19 +185,19 @@ AbstractFighter.prototype.getMaxFrameBounds = function() {
 
 AbstractFighter.prototype.draw = function(frame) {
 	// Clear the fighter's drawing context
+	//console.log("Width: " + this.subCanvas.width + " Height: " + this.subCanvas.height);
 	this.subCtx.clearRect(0, 0, this.subCanvas.width, this.subCanvas.height);
 	
 	// Draw fighter frame
 	this.subCtx.save();
 	
 	if (this.facing == FacingEnum.FACING_LEFT) {
-		this.subCtx.translate(this.frames[frame].width, 0.0);
+		this.subCtx.translate(this.framesNew[this.currentFrameSet][frame].width, 0.0);
 		this.subCtx.scale(-1.0, 1.0);
-		//this.subCtx.translate(-this.frames[frame].width, 0.0);
 	}
 	
 	this.subCtx.fillStyle = "orange";
-	this.subCtx.drawImage(this.frames[frame].image, 0, 0, this.frames[frame].width, this.frames[frame].height);
+	this.subCtx.drawImage(this.framesNew[this.currentFrameSet][frame].image, 0, 0, this.framesNew[this.currentFrameSet][frame].width, this.framesNew[this.currentFrameSet][frame].height);
 	
 	// If in debug mode, draw fighter bounds
 	if (this.debugMode) {
@@ -121,7 +215,7 @@ AbstractFighter.prototype.draw = function(frame) {
 	// so we don't flip the debug info if we're facing left
 	if (this.debugMode) {
 		this.subCtx.save();
-		var debugInfoY = this.frames[frame].height - 100;
+		var debugInfoY = this.framesNew[this.currentFrameSet][frame].height - 100;
 		this.subCtx.fillStyle = "orange";
 		this.subCtx.fillRect(0, debugInfoY, 100, 100);
 		this.subCtx.font = "12px sans-serif"
@@ -140,9 +234,9 @@ AbstractFighter.prototype.drawBoundingBox = function(frame, boundingBoxSection)
 {
 	this.subCtx.save();
 	
-	this.subCtx.lineWidth = "12";
+	this.subCtx.lineWidth = "1";
 	
-	var bounds = this.frames[frame].bounds;
+	var bounds = this.framesNew[this.currentFrameSet][frame].bounds;
 	var boundsSection = bounds[boundingBoxSection];
 	
 	if (boundsSection.collisionStatus) {
@@ -172,7 +266,7 @@ AbstractFighter.prototype.update = function(frameDuration) {
 	if (this.frameElapsedTime >= FRAME_TIME) {
 		this.frameElapsedTime = 0;
 		this.currentFrame++;
-		if (this.currentFrame >= NUM_FRAMES_PER_STATE) {
+		if (this.currentFrame >= this.initData["Framesets"][this.currentFrameSet]["NumFrames"]) {
 			this.currentFrame = 0;
 		}
 		

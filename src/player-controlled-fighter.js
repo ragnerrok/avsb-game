@@ -1,6 +1,6 @@
-function PlayerFighter(engine, name, startingPosition, movementSpeed, runModifier, crouchModifier, jumpPower, actionNumFrames)
+function PlayerFighter(engine, name, startingPosition, fighterInitJSONUrl, movementSpeed, runModifier, crouchModifier, jumpPower, actionNumFrames)
 {
-	AbstractFighter.call(this, engine, name, startingPosition, movementSpeed, runModifier, crouchModifier, jumpPower, actionNumFrames); // Call superconstructor
+	AbstractFighter.call(this, engine, name, startingPosition, fighterInitJSONUrl, movementSpeed, runModifier, crouchModifier, jumpPower, actionNumFrames); // Call superconstructor
 }
 
 PlayerFighter.prototype = Object.create(AbstractFighter.prototype);
@@ -47,6 +47,8 @@ PlayerFighter.prototype.updateState = function() {
 	}
 	
 	if (this.engine.currentInput & USER_INPUT_MOVING_LEFT_RIGHT) {
+		this.currentFrameSet = FrameSetEnum.FRAME_SET_WALKING;
+		
 		// If we're not in the middle of a jump, then we're in the move state
 		if (this.animationState != AnimationStateEnum.ANIMATION_STATE_JUMP) {
 			this.animationState = AnimationStateEnum.ANIMATION_STATE_MOVE;
@@ -74,6 +76,8 @@ PlayerFighter.prototype.updateState = function() {
 	} else {
 		this.velX = 0;
 		if (this.animationState != AnimationStateEnum.ANIMATION_STATE_JUMP) {
+			this.currentFrameSet = FrameSetEnum.FRAME_SET_IDLE;
+			this.currentFrame = 0;
 			this.animationState = AnimationStateEnum.ANIMATION_STATE_IDLE;
 		}
 	}
@@ -112,7 +116,6 @@ PlayerFighter.prototype.updatePosition = function(frameDuration) {
 	var xOffset = this.velX * frameDurationSecs;
 	var yOffset = this.velY * frameDurationSecs;
 	
-	// TODO: Fix magic numbers
-	this.location.x = clamp_to_range(this.location.x + xOffset, 0, this.engine.canvas.width);
-	this.location.y = clamp_to_range(this.location.y + yOffset, 0, this.engine.canvas.height);
+	this.location.x = clampToRange(this.location.x + xOffset, 0, this.engine.canvas.width);
+	this.location.y = clampToRange(this.location.y + yOffset, 0, this.engine.canvas.height);
 }

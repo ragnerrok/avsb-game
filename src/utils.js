@@ -61,16 +61,16 @@ function Frame(parentFighter, image)
 
 Frame.prototype.parseBounds = function(boundsSVG, frameNum)
 {
-	var boundsSVG = document.getElementById("aaron");
+	//var boundsSVG = document.getElementById("aaron");
 	
-	var headBounds = document.getElementById("frame" + frameNum + "-head");
-	var bodyBounds = document.getElementById("frame" + frameNum + "-body");
-	var leftArmBounds = document.getElementById("frame" + frameNum + "-leftarm");
-	var rightArmBounds = document.getElementById("frame" + frameNum + "-rightarm");
-	var leftLegBounds = document.getElementById("frame" + frameNum + "-leftleg");
-	var rightLegBounds = document.getElementById("frame" + frameNum + "-rightleg");
+	var headBounds = boundsSVG.getElementById("frame" + frameNum + "-head");
+	var bodyBounds = boundsSVG.getElementById("frame" + frameNum + "-body");
+	var leftArmBounds = boundsSVG.getElementById("frame" + frameNum + "-arm-left");
+	var rightArmBounds = boundsSVG.getElementById("frame" + frameNum + "-arm-right");
+	var leftLegBounds = boundsSVG.getElementById("frame" + frameNum + "-leg-left");
+	var rightLegBounds = boundsSVG.getElementById("frame" + frameNum + "-leg-right");
 	
-	var frameBounds = new FrameBounds(this.parentFighter, this.width / boundsSVG.viewBox.baseVal.width, this.height / boundsSVG.viewBox.baseVal.height);
+	var frameBounds = new FrameBounds(this.parentFighter, this.width / boundsSVG.documentElement.viewBox.baseVal.width, this.height / boundsSVG.documentElement.viewBox.baseVal.height);
 	
 	frameBounds.parseSectionBounds(headBounds, "headBounds");
 	frameBounds.parseSectionBounds(bodyBounds, "bodyBounds");
@@ -92,6 +92,7 @@ function Bounds(parentBounds, x, y, width, height, transform)
 	this.height = height;
 	this.transform = transform;
 	this.collisionStatus = false;
+	this.collidingPart = BodyPartEnum.BODY_PART_NONE;
 	
 	// Compute the vertices of the bounds rectangle here
 	// for use in the collision detection algorithm
@@ -131,6 +132,11 @@ Bounds.prototype.isColliding = function(otherBounds) {
 		return false;
 	}
 	return true;
+};
+
+Bounds.prototype.resetCollisionState = function() {
+	this.collisionStatus = false;
+	this.collidingPart = BodyPartEnum.BODY_PART_NONE;
 };
 
 Bounds.prototype.checkSeparatingAxis = function(axis, otherBounds) {
@@ -200,37 +206,7 @@ function FrameBounds(parentFighter, xScale, yScale)
 	this.rightLegBounds = null;
 }
 
-FrameBounds.prototype.checkCollisions = function(otherFrameBounds) {
-	// TODO: Just do leg bounds for testing
-	var collidingHead = this.leftLegBounds.isColliding(otherFrameBounds.headBounds);
-	var collidingBody = this.leftLegBounds.isColliding(otherFrameBounds.bodyBounds);
-	var collidingLeftArm = this.leftLegBounds.isColliding(otherFrameBounds.leftArmBounds);
-	var collidingRightArm = this.leftLegBounds.isColliding(otherFrameBounds.rightArmBounds);
-	var collidingLeftLeg = this.leftLegBounds.isColliding(otherFrameBounds.leftLegBounds);
-	var collidingRightLeg = this.leftLegBounds.isColliding(otherFrameBounds.rightLegBounds);
-	
-	this.leftLegBounds.collisionStatus = collidingHead || collidingBody || collidingLeftArm || collidingRightArm || collidingLeftLeg || collidingRightLeg;
-	
-	/*
-	this.leftLegBounds.collisionStatus = this.leftLegBounds.isColliding(otherFrameBounds.headBounds) ||
-		this.leftLegBounds.isColliding(otherFrameBounds.bodyBounds) ||
-		this.leftLegBounds.isColliding(otherFrameBounds.leftArmBounds) ||
-		this.leftLegBounds.isColliding(otherFrameBounds.rightArmBounds) ||
-		this.leftLegBounds.isColliding(otherFrameBounds.leftLegBounds) ||
-		this.leftLegBounds.isColliding(otherFrameBounds.rightLegBounds);
-	*/
-	
-	/*
-	this.rightLegBounds.collisionStatus = this.rightLegBounds.isColliding(otherFrameBounds.headBounds) ||
-		this.rightLegBounds.isColliding(otherFrameBounds.bodyBounds) ||
-		this.rightLegBounds.isColliding(otherFrameBounds.leftArmBounds) ||
-		this.rightLegBounds.isColliding(otherFrameBounds.rightArmBounds) ||
-		this.rightLegBounds.isColliding(otherFrameBounds.leftLegBounds) ||
-		this.rightLegBounds.isColliding(otherFrameBounds.rightLegBounds);
-	*/
-};
-
-FrameBounds.prototype.parseSectionBounds = function (boundsElement, section) {
+FrameBounds.prototype.parseSectionBounds = function(boundsElement, section) {
 	var transform = null;
 	if (boundsElement.transform.baseVal.length != 0) {
 		transform = boundsElement.transform.baseVal[0].matrix;
@@ -239,7 +215,139 @@ FrameBounds.prototype.parseSectionBounds = function (boundsElement, section) {
 	this[section] = new Bounds(this, boundsElement.x.baseVal.value, boundsElement.y.baseVal.value, boundsElement.width.baseVal.value, boundsElement.height.baseVal.value, transform);
 };
 
-function clamp_to_range(value, rangeLow, rangeHigh)
+FrameBounds.prototype.resetCollisionState = function() {
+	this.headBounds.resetCollisionState();
+	this.bodyBounds.resetCollisionState();
+	this.leftArmBounds.resetCollisionState();
+	this.rightArmBounds.resetCollisionState();
+	this.leftLegBounds.resetCollisionState();
+	this.rightLegBounds.resetCollisionState();
+}
+
+function FrameSetLoadInfo(path, prefix, numFrames)
+{
+	this.path = path;
+	this.prefix = prefix;
+	this.numFrames = numFrames;
+}
+
+function checkCollisions(fighter1, fighter2) {
+	// TODO: For now, just collide left leg, left arm, body, and head against each other
+	
+	// TODO: Make these the proper frames when we're loading frames
+	var fighter1Frame = fighter1.framesNew[fighter1.currentFrameSet][fighter1.currentFrame];
+	var fighter2Frame = fighter2.framesNew[fighter2.currentFrameSet][fighter2.currentFrame];
+	
+	// Reset the collision state of all body parts, since we're gonna recalculate them for the current frame
+	fighter1Frame.bounds.resetCollisionState();
+	fighter2Frame.bounds.resetCollisionState();
+	
+	// Check fighter 1 left leg colliding with fighter 2 left leg
+	if (fighter1Frame.bounds.leftLegBounds.isColliding(fighter2Frame.bounds.leftLegBounds)) {
+		fighter1Frame.bounds.leftLegBounds.collisionStatus = true;
+		fighter2Frame.bounds.leftLegBounds.collisionStatus = true;
+		fighter1Frame.bounds.leftLegBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_LEG;
+		fighter2Frame.bounds.leftLegBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_LEG;
+	}
+	
+	// Check fighter 1 left leg colliding with fighter 2 body
+	if (fighter1Frame.bounds.leftLegBounds.isColliding(fighter2Frame.bounds.bodyBounds)) {
+		fighter1Frame.bounds.leftLegBounds.collisionStatus = true;
+		fighter2Frame.bounds.bodyBounds.collisionStatus = true;
+		fighter1Frame.bounds.leftLegBounds.collidingPart = BodyPartEnum.BODY_PART_BODY;
+		fighter2Frame.bounds.bodyBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_LEG;
+	}
+	
+	// Check fighter 1 left leg colliding with fighter 2 left arm
+	if (fighter1Frame.bounds.leftLegBounds.isColliding(fighter2Frame.bounds.leftArmBounds)) {
+		fighter1Frame.bounds.leftLegBounds.collisionStatus = true;
+		fighter2Frame.bounds.leftArmBounds.collisionStatus = true;
+		fighter1Frame.bounds.leftLegBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_ARM;
+		fighter2Frame.bounds.leftArmBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_LEG;
+	}
+	
+	// Check fighter 1 left leg colliding with fighter 2 head
+	if (fighter1Frame.bounds.leftLegBounds.isColliding(fighter2Frame.bounds.headBounds)) {
+		fighter1Frame.bounds.leftLegBounds.collisionStatus = true;
+		fighter2Frame.bounds.headBounds.collisionStatus = true;
+		fighter1Frame.bounds.leftLegBounds.collidingPart = BodyPartEnum.BODY_PART_HEAD;
+		fighter2Frame.bounds.headBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_LEG;
+	}
+	
+	// Check fighter 1 left arm colliding with fighter 2 left leg
+	if (fighter1Frame.bounds.leftArmBounds.isColliding(fighter2Frame.bounds.leftLegBounds)) {
+		fighter1Frame.bounds.leftArmBounds.collisionStatus = true;
+		fighter2Frame.bounds.leftLegBounds.collisionStatus = true;
+		fighter1Frame.bounds.leftArmBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_LEG;
+		fighter2Frame.bounds.leftLegBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_ARM;
+	}
+	
+	// Check fighter 1 left arm colliding with fighter 2 body
+	if (fighter1Frame.bounds.leftArmBounds.isColliding(fighter2Frame.bounds.bodyBounds)) {
+		fighter1Frame.bounds.leftArmBounds.collisionStatus = true;
+		fighter2Frame.bounds.bodyBounds.collisionStatus = true;
+		fighter1Frame.bounds.leftArmBounds.collidingPart = BodyPartEnum.BODY_PART_BODY;
+		fighter2Frame.bounds.bodyBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_ARM;
+	}
+	
+	// Check fighter 1 left arm colliding with fighter 2 left arm
+	if (fighter1Frame.bounds.leftArmBounds.isColliding(fighter2Frame.bounds.leftArmBounds)) {
+		fighter1Frame.bounds.leftArmBounds.collisionStatus = true;
+		fighter2Frame.bounds.leftArmBounds.collisionStatus = true;
+		fighter1Frame.bounds.leftArmBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_ARM;
+		fighter2Frame.bounds.leftArmBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_ARM;
+	}
+	
+	// Check fighter 1 left arm colliding with fighter 2 head
+	if (fighter1Frame.bounds.leftArmBounds.isColliding(fighter2Frame.bounds.headBounds)) {
+		fighter1Frame.bounds.leftArmBounds.collisionStatus = true;
+		fighter2Frame.bounds.headBounds.collisionStatus = true;
+		fighter1Frame.bounds.leftArmBounds.collidingPart = BodyPartEnum.BODY_PART_HEAD;
+		fighter2Frame.bounds.headBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_ARM;
+	}
+	
+	// Check fighter 1 body colliding with fighter 2 left leg
+	if (fighter1Frame.bounds.bodyBounds.isColliding(fighter2Frame.bounds.leftLegBounds)) {
+		fighter1Frame.bounds.bodyBounds.collisionStatus = true;
+		fighter2Frame.bounds.leftLegBounds.collisionStatus = true;
+		fighter1Frame.bounds.bodyBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_LEG;
+		fighter2Frame.bounds.leftLegBounds.collidingPart = BodyPartEnum.BODY_PART_BODY;
+	}
+	
+	// Check fighter 1 head colliding with fighter 2 left leg
+	if (fighter1Frame.bounds.headBounds.isColliding(fighter2Frame.bounds.leftLegBounds)) {
+		fighter1Frame.bounds.headBounds.collisionStatus = true;
+		fighter2Frame.bounds.leftLegBounds.collisionStatus = true;
+		fighter1Frame.bounds.headBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_LEG;
+		fighter2Frame.bounds.leftLegBounds.collidingPart = BodyPartEnum.BODY_PART_HEAD;
+	}
+	
+	// Check fighter 1 body colliding with fighter 2 left arm
+	if (fighter1Frame.bounds.bodyBounds.isColliding(fighter2Frame.bounds.leftArmBounds)) {
+		fighter1Frame.bounds.bodyBounds.collisionStatus = true;
+		fighter2Frame.bounds.leftArmBounds.collisionStatus = true;
+		fighter1Frame.bounds.bodyBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_ARM;
+		fighter2Frame.bounds.leftArmBounds.collidingPart = BodyPartEnum.BODY_PART_BODY;
+	}
+	
+	// Check fighter 1 head colliding with fighter 2 left arm
+	if (fighter1Frame.bounds.headBounds.isColliding(fighter2Frame.bounds.leftArmBounds)) {
+		fighter1Frame.bounds.headBounds.collisionStatus = true;
+		fighter2Frame.bounds.leftArmBounds.collisionStatus = true;
+		fighter1Frame.bounds.headBounds.collidingPart = BodyPartEnum.BODY_PART_LEFT_ARM;
+		fighter2Frame.bounds.leftArmBounds.collidingPart = BodyPartEnum.BODY_PART_HEAD;
+	}
+}
+
+function clampToRange(value, rangeLow, rangeHigh)
 {
 	return (value < rangeLow) ? rangeLow : ((value > rangeHigh) ? rangeHigh : value);
+}
+
+function createBoundFunction(func /*additional arguments passed here*/)
+{
+	var boundArgs = Array.prototype.slice.call(arguments, 1);
+	return function() {
+		return func.apply(this, boundArgs);
+	}
 }

@@ -23,6 +23,17 @@ var ActionEnum = Object.freeze({
 	ACTION_PROJECTILE: "Projectile"
 });
 
+var FrameSetEnum = Object.freeze({
+	FRAME_SET_IDLE: "Idle",
+	FRAME_SET_WALKING: "Walking",
+	FRAME_SET_RUNNING: "Running",
+	FRAME_SET_JUMPING: "Jumping",
+	FRAME_SET_PUNCHING: "Punching",
+	FRAME_SET_KICKING: "Kicking",
+	FRAME_SET_BLOCKING: "Blocking",
+	FRAME_SET_CROUCHING: "Crouching"
+});
+
 var UserInputEnum = Object.freeze({
 	USER_INPUT_NONE: 0x0000,
 	USER_INPUT_LEFT: 0x0001,
@@ -33,6 +44,16 @@ var UserInputEnum = Object.freeze({
 	USER_INPUT_KICK: 0x0020,
 	USER_INPUT_BLOCK: 0x0040,
 	USER_INPUT_RUN: 0x0080
+});
+
+var BodyPartEnum = Object.freeze({
+	BODY_PART_NONE: "None",
+	BODY_PART_LEFT_LEG: "LeftLeg",
+	BODY_PART_RIGHT_LEG: "RightLeg",
+	BODY_PART_LEFT_ARM: "LeftArm",
+	BODY_PART_RIGHT_ARM: "RightArm",
+	BODY_PART_BODY: "Body",
+	BODY_PART_HEAD: "Head"
 });
 
 var FPS = 15;
@@ -86,18 +107,30 @@ function Engine(mainPage)
 	this.currentInput = UserInputEnum.USER_INPUT_NONE;
 	this.fighter1 = null;
 	this.fighter2 = null;
+	this.numFightersLoaded = 0;
 	
-	this.fighter1 = new PlayerFighter(this, "Aaron-Frame-1", new Point(0, this.canvas.height));
-	this.fighter2 = new AIFighter(this, "Aaron-Frame-1", new Point(550, this.canvas.height));
+	this.fighter1 = new PlayerFighter(this, "Aaron-Frame-1", new Point(0, this.canvas.height), "../src/fighter_aaron.json");
+	this.fighter1.onFighterLoaded = this.onFighterLoaded.bind(this);
+	this.fighter2 = new AIFighter(this, "Aaron-Frame-1", new Point(550, this.canvas.height), "../src/fighter_aaron.json");
+	this.fighter2.onFighterLoaded = this.onFighterLoaded.bind(this);
 	
 	// Set up stage
 	this.drawStageBounds();
 	
-	// Start animation loop
-	// Need to setup self variable for later use in correctly
-	// binding subsequent calls of requestAnimationFrame
-	//this.self = this;
-	requestAnimationFrame(this.renderFrame.bind(this));
+	// Load fighters.  The animation loop will start when all fighters are loaded
+	this.fighter1.loadFighter();
+	this.fighter2.loadFighter();
+}
+
+Engine.prototype.onFighterLoaded = function() {
+	console.log("Fighter Loaded");
+	this.numFightersLoaded++;
+	console.log(this.numFightersLoaded);
+	if (this.numFightersLoaded >= 2) {
+		// Start animation loop
+		console.log("Starting animation loop");
+		requestAnimationFrame(this.renderFrame.bind(this));
+	}
 }
 
 Engine.prototype.keydownHandler = function(event) {
@@ -126,7 +159,6 @@ Engine.prototype.renderFrame = function(globalTime) {
 		this.fpsDecimationCounter = 0;
 	}
 	
-	
 	// Clear the canvas
 	this.ctx.clearRect(1, 1, this.canvas.width - 2, this.canvas.height - 2);
 	
@@ -138,19 +170,17 @@ Engine.prototype.renderFrame = function(globalTime) {
 	this.ctx.restore();
 	
 	// Check fighter collisions
-	// TODO: Change bounds check to be based on current frame when we have more than 1 frame
-	this.fighter1.frames[0].bounds.checkCollisions(this.fighter2.frames[0].bounds);
+	checkCollisions(this.fighter1, this.fighter2);
 	
 	this.fighter1.update(this.frameDuration);
-	this.fighter1.draw(0);
+	this.fighter1.draw(this.fighter1.currentFrame);
 	
 	this.fighter2.update(this.frameDuration);
-	this.fighter2.draw(0);
+	this.fighter2.draw(this.fighter2.currentFrame);
 	
 	// Render each individual fighter canvas into the main canvas
-	// TODO: Change y-offset to be based on current frame when we have more than 1 frame
-	this.ctx.drawImage(this.fighter1.subCanvas, this.fighter1.location.x, this.fighter1.location.y - this.fighter1.frames[0].height);
-	this.ctx.drawImage(this.fighter2.subCanvas, this.fighter2.location.x, this.fighter2.location.y - this.fighter2.frames[0].height);
+	this.ctx.drawImage(this.fighter1.subCanvas, this.fighter1.location.x, this.fighter1.location.y - this.fighter1.framesNew[this.fighter1.currentFrameSet][this.fighter1.currentFrame].height);
+	this.ctx.drawImage(this.fighter2.subCanvas, this.fighter2.location.x, this.fighter2.location.y - this.fighter2.framesNew[this.fighter1.currentFrameSet][this.fighter1.currentFrame].height);
 	
 	requestAnimationFrame(this.renderFrame.bind(this));
 };

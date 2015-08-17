@@ -1,0 +1,53 @@
+{
+	"NumFramesets": 8,
+	"Framesets": {
+		"Idle": {
+			"Path": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Idle",
+			"Prefix": "aaron-idle-frame",
+			"BoundsPath": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Idle/aaron-idle-bounding-boxes.svg",
+			"NumFrames": 1
+		},
+		"Walking": {
+			"Path": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Forward",
+			"Prefix": "aaron-walking-frame",
+			"BoundsPath": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Forward/aaron-walking-bounding-boxes.svg",
+			"NumFrames": 14
+		},
+		"Running": {
+			"Path": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Forward",
+			"Prefix": "",
+			"BoundsPath": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Idle/aaron-idle-bounding-boxes.svg",
+			"NumFrames": 0
+		},
+		"Jumping": {
+			"Path": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Forward",
+			"Prefix": "",
+			"BoundsPath": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Idle/aaron-idle-bounding-boxes.svg",
+			"NumFrames": 0
+		},
+		"Punching": {
+			"Path": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Forward",
+			"Prefix": "",
+			"BoundsPath": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Idle/aaron-idle-bounding-boxes.svg",
+			"NumFrames": 0
+		},
+		"Kicking": {
+			"Path": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Forward",
+			"Prefix": "",
+			"BoundsPath": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Idle/aaron-idle-bounding-boxes.svg",
+			"NumFrames": 0
+		},
+		"Blocking": {
+			"Path": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Forward",
+			"Prefix": "",
+			"BoundsPath": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Idle/aaron-idle-bounding-boxes.svg",
+			"NumFrames": 0
+		},
+		"Crouching": {
+			"Path": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Forward",
+			"Prefix": "",
+			"BoundsPath": "art-source/RSVP_Game/RSVP_Sprites/Aaron/Moving/Idle/aaron-idle-bounding-boxes.svg",
+			"NumFrames": 0
+		}
+	}
+}
